@@ -1,7 +1,7 @@
 {
-  "name": "back",
+  "name": "sauce-back",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend pour le projet P6, du nom de sauecs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
