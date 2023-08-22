@@ -4,7 +4,7 @@
   "configurations": [
     {
       "name": "ng serve",
-      "type": "pwa-chrome",
+      "type": "chrome",  // correction pwa en le suprimant
       "request": "launch",
       "preLaunchTask": "npm: start",
       "url": "http://localhost:4200/"
