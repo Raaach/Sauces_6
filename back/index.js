@@ -1,17 +1,16 @@
-console.log("hello World")
+
+require("dotenv").config()
 const express = require("express");
 const app = express();
 const cors = require("cors");
 const port = 3000
 
-//Database
-const mongoose= require("mongoose");
-const password = "A0MWbXekaMrgTdcU";
-const uri = 
-    `mongodb+srv://Rachid:${password}@nicolas.4q71gdx.mongodb.net/?retryWrites=true&w=majority`;
+//connection database
+require("./mongo")
 
-mongoose.connect(uri).then((()=>console.log("Connected to Mongo!"))).catch(err => console.error
-    ("Error connecting to mongo:" , err))
+//Controllers
+const {createUser} = require("./controllers/users")
+
 
 //Middleware
 app.use(cors());
@@ -19,9 +18,8 @@ app.use(express.json());
 
 //Routes
 
-app.post("/api/auth/signup", (req, res) => {
-    console.log("Signup request: " + req.body)
-    res.send({message : "Utilisateur enregistré !"})
-});
+app.post("/api/auth/signup", createUser );          // req,res => createUser(req,res)
 app.get("/", (req, res) => res.send("Hello World"))
+
+//Listen
 app.listen(port,()=>console.log("Listen on port "+ port))
