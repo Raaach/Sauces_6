@@ -30,9 +30,8 @@ async function logUser(req,res){
     if (!isPasswordOk) {
         res.status(403).send({message: 'Mot de passe incorecte'})
     }
-    if (isPasswordOk){
-        res.status(200).send({message: 'Mot de passe correct'})
-    }
+    res.status(200).send({message: 'Mot de passe correct'})
+    
     console.log('user:', user)
     console.log('isPasswordOk:', isPasswordOk)
     
