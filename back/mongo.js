@@ -1,5 +1,6 @@
 //Database
 const mongoose= require("mongoose");
+const uniqueVlidator = require("mongoose-unique-validator");
 const password = process.env.DB_password;
 const username = process.env.DB_username;
 const uri = 
@@ -11,9 +12,11 @@ mongoose
     .catch(err => console.error ("Error connecting to mongo:" , err))
 
 const userSchema = new mongoose.Schema({
-    email: String,
-    password: String
+    email: {type: String, required: true, unique: true},
+    password: {type: String, required: true}
 })
+
+userSchema.plugin(uniqueVlidator)
 
 const User = mongoose.model("User", userSchema)
 

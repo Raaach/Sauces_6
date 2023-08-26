@@ -9,7 +9,7 @@ const port = 3000
 require("./mongo")
 
 //Controllers
-const {createUser} = require("./controllers/users")
+const {createUser,logUser} = require("./controllers/users")
 
 
 //Middleware
@@ -19,6 +19,7 @@ app.use(express.json());
 //Routes
 
 app.post("/api/auth/signup", createUser );          // req,res => createUser(req,res)
+app.post("/api/auth/login",logUser);
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen

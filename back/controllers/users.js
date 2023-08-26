@@ -12,8 +12,8 @@ async function createUser(req, res)  {
 
     user
         .save()
-        .then(()=> res.send({message : "Utilisateur enregistré !"}))
-        .catch(err=> console.log("User pas enregitré!", err))
+        .then(()=> res.status(201).send({message : "Utilisateur enregistré !"})) //(201)= ressource créée
+        .catch((err)=> res.status(409).send({message: "User pas enregitré:" + err})) //(409)= conflit
     }
 
 function hashPassword(password) {
@@ -21,4 +21,11 @@ function hashPassword(password) {
     return bcrypt.hash(password, saltRounds)
 }
 
-module.exports ={createUser}
+function logUser(req,res){
+    const email = req.body.email
+    const password = req.body.password
+    User.findOne({ email: email}).then(console.log)
+
+}
+
+module.exports ={createUser, logUser}
