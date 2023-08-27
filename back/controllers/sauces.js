@@ -28,20 +28,29 @@ function getSauces( req, res){                                    //cette fontio
 
 
 function createSauce(req, res){
-    const name = req.body.name
-    const sauce = new Sauces({
-        userId: "Prout",
-        manufacturer: "Prout",
-        description: "Prout",
-        mainPepper: "Prout",
-        imageUrl: "Prout",
-        heat: 2,
-        likes: 2,
-        dislikes: 2,
-        usersLiked:["Prout"],
-        usersDisliked : ["Prout"]
+    const  sauce = JSON.parse(req.body.sauce)
+
+    const {name, manufacturer, description, mainPepper, heat, userId} = sauce
+
+    console.log({body: req.body.sauce})
+    console.log({file: req.file})
+
+    const imageUrl = req.file.destination+ req.file.filename
+    console.log({imagePath: imageUrl})
+
+    const sauceProduct = new Sauces({
+        userId,                                 //on peut se le permettre en JS car pareil que userId:userdId
+        manufacturer,
+        description,
+        mainPepper,
+        imageUrl,
+        heat,
+        likes: 0,
+        dislikes: 0,
+        usersLiked:[],
+        usersDisliked : []
     })
-    sauce.save().then((res)=> console.log("Success saved Sauces", res )).catch(console.error)
+    sauceProduct.save().then((res)=> console.log("Success saved Sauces", res )).catch(console.error)
 }
 
 module.exports = {getSauces, createSauce} 

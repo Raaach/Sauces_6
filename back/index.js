@@ -5,6 +5,7 @@ const app = express();
 const cors = require("cors");
 const port = 3000;
 const bodyParser = require('body-parser');
+const path = require("path");
 
 
 //connection database
@@ -17,15 +18,25 @@ const {getSauces, createSauce} = require("./controllers/sauces")
 //Middleware
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static("public/images"));
+
 const {authUser} = require("./middleware/auth");
+const multer = require("multer");
+const storage = multer.diskStorage({destination: "public/images/", filename: makeFileName}); 
+const upload = multer({storage: storage});
+
+function makeFileName(req, file, callback){
+    callback(null,Date.now()+"-"+ file.originalname )
+}
 
 //Routes
 
 app.post("/api/auth/signup", createUser );          // req,res => createUser(req,res)
 app.post("/api/auth/login",logUser);
 app.get("/api/sauces", authUser, getSauces);
-app.post("/api/sauces", authUser, createSauce);
+app.post("/api/sauces", authUser, upload.single("image"), createSauce);
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen
