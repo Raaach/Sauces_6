@@ -10,7 +10,7 @@ require("./mongo")
 
 //Controllers
 const {createUser,logUser} = require("./controllers/users")
-
+const {getSauces} = require("./controllers/sauces")
 
 //Middleware
 app.use(cors());
@@ -20,6 +20,7 @@ app.use(express.json());
 
 app.post("/api/auth/signup", createUser );          // req,res => createUser(req,res)
 app.post("/api/auth/login",logUser);
+app.get("/api/sauces", getSauces);
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen
