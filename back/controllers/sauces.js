@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+
+
 const saucesSchema = new mongoose.Schema({
     userId: String,
     manufacturer: String,
@@ -26,7 +28,7 @@ function getSauces( req, res){                                    //cette fontio
 
 
 function createSauce(req, res){
-
+    const name = req.body.name
     const sauce = new Sauces({
         userId: "Prout",
         manufacturer: "Prout",
