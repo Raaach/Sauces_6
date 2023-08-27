@@ -1,22 +1,49 @@
-const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const saucesSchema = new mongoose.Schema({
+    userId: String,
+    manufacturer: String,
+    description: String,
+    mainPepper: String,
+    imageUrl: String,
+    heat: Number,
+    likes: Number,
+    dislikes: Number,
+    usersLiked:[ String ],
+    usersDisliked : [ String ]
 
-function getSauces(req,res){
-    const header = req.header("Authorization")
-    if (header== null) return res.status(403).send({message:"invalid"})
-    
-    const token = header.split(" ")[1]
-    if (token ==null) return res.status(403).send({message:"Token can't be null"})
+})
 
-    jwt.verify(token, process.env.JWT_PASSWORD, (err, decoded) => handleToken(err, decoded, res))
+const Sauces =  mongoose.model("Sauces", saucesSchema)
 
-}
 
-function handleToken(err, decoded, res){
-    if (err) res.status(403).send({message: "Token not valid"+ err})
-    else {
-        console.log("Le token est valid",decoded)
-        res.send({message: "Voici toutes les sauces"})
+
+function getSauces( req, res){                                    //cette fontion est a utiliser en interne
+        console.log("le token est validé, nous sommes bien dans getSauces")
+        //console.log("Le token est valid",decoded)
+        Sauces.find({}).then(sauces => res.send(sauces))
+        //res.send({message: [{sauce: "sauces1"}, {sauce: "sauces2"}]})
     }
+
+
+function createSauce(req, res){
+
+    const sauce = new Sauces({
+        userId: "Prout",
+        manufacturer: "Prout",
+        description: "Prout",
+        mainPepper: "Prout",
+        imageUrl: "Prout",
+        heat: 2,
+        likes: 2,
+        dislikes: 2,
+        usersLiked:["Prout"],
+        usersDisliked : ["Prout"]
+    })
+    sauce.save().then((res)=> console.log("Success saved Sauces", res )).catch(console.error)
 }
 
-module.exports = {getSauces} 
+module.exports = {getSauces, createSauce} 
+
+
+
+//Sauces.deleteMany({}).then(()=>console.log("all removed"))

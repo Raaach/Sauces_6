@@ -45,7 +45,7 @@ async function logUser(req,res){
 
 function creatEmailToken(email){
     const passwordJwt = process.env.JWT_PASSWORD
-    return jwt.sign({email: email}, passwordJwt, {expiresIn: "12h"})
+    return jwt.sign({email: email}, passwordJwt, {expiresIn: "200h"})
 }
 //User.deleteMany({}).then(()=>console.log("all removed"))
 module.exports ={createUser, logUser}
