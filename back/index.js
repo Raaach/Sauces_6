@@ -3,8 +3,9 @@ require("dotenv").config()
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const port = 3000;
 const bodyParser = require('body-parser');
-const port = 3000
+
 
 //connection database
 require("./mongo")
@@ -16,7 +17,7 @@ const {getSauces, createSauce} = require("./controllers/sauces")
 //Middleware
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 const {authUser} = require("./middleware/auth");
 
 //Routes
