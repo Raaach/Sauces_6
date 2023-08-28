@@ -9,16 +9,13 @@ const multer = require("multer");
 const storage = multer.diskStorage({
     destination: "images/",
     filename: function (req, file, cb){
-        const uniqueSuffix = Date.now() +"-"+Math.round(Math.random()*1e9)
-        console.log({uniqueSuffix})
-        cb(null,Date.now()+"-"+ file.originalname )
+        cb(null,makeFileName(file))
     }
 })
+function makeFileName(file){
+    return `${Date.now()}-${file.originalname}`
+}
 const upload = multer({storage: storage});
-
-
-// const bodyParser = require('body-parser');
-// const path = require("path");
 
 
 //connection database
@@ -31,9 +28,6 @@ const {getSauces, createSauce} = require("./controllers/sauces")
 //Middleware
 app.use(cors());
 app.use(express.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
-app.use(express.static("public/images"));
 
 const {authUser} = require("./middleware/auth");
 
