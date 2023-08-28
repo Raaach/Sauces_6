@@ -28,18 +28,16 @@ function getSauces( req, res){                                    //cette fontio
 
 
 function createSauce(req, res){
-    const  sauce = JSON.parse(req.body.sauce)
-
+    const {body,file}= req
+    const  sauce = JSON.parse(body.sauce) //on le transforme en objet avec JSON.parsew
     const {name, manufacturer, description, mainPepper, heat, userId} = sauce
-
-    console.log({body: req.body.sauce})
-    console.log({file: req.file})
 
     const imageUrl = req.file.destination+ req.file.filename
     console.log({imagePath: imageUrl})
 
     const sauceProduct = new Sauces({
         userId,                                 //on peut se le permettre en JS car pareil que userId:userdId
+        name,
         manufacturer,
         description,
         mainPepper,
