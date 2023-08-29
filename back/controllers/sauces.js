@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const saucesSchema = new mongoose.Schema({
     userId: String,
+    name: String,
     manufacturer: String,
     description: String,
     mainPepper: String,
@@ -29,6 +30,7 @@ function getSauces( req, res){                                    //cette fontio
 
 function createSauce(req, res){
     const {body,file}= req
+    const {fileName} = file
     const  sauce = JSON.parse(body.sauce) //on le transforme en objet avec JSON.parsew
     const {name, manufacturer, description, mainPepper, heat, userId} = sauce
 
@@ -41,7 +43,7 @@ function createSauce(req, res){
         manufacturer,
         description,
         mainPepper,
-        imageUrl,
+        imageUrl: "images/"+fileName,
         heat,
         likes: 0,
         dislikes: 0,

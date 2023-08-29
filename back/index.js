@@ -9,11 +9,13 @@ const multer = require("multer");
 const storage = multer.diskStorage({
     destination: "images/",
     filename: function (req, file, cb){
-        cb(null,makeFileName(file))
+        cb(null,makeFileName(req, file))
     }
 })
-function makeFileName(file){
-    return `${Date.now()}-${file.originalname}`
+function makeFileName(req, file){
+    const fileName = `${Date.now()}-${file.originalname}`.replace(/\s/g, "-");
+    file.fileName = fileName
+    return fileName
 }
 const upload = multer({storage: storage});
 
@@ -29,7 +31,7 @@ const {getSauces, createSauce} = require("./controllers/sauces")
 app.use(cors());
 app.use(express.json());
 
-const {authUser} = require("./middleware/auth");
+const {authUser} = require("./middleware/auth")
 
 
 
@@ -42,4 +44,5 @@ app.post("/api/sauces", authUser, upload.single("image"), createSauce);
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen
+app.use("/images", express.static('images'))
 app.listen(port,()=>console.log("Listen on port "+ port))
