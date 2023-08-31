@@ -34,8 +34,9 @@ function createSauce(req, res){
     const  sauce = JSON.parse(body.sauce) //on le transforme en objet avec JSON.parsew
     const {name, manufacturer, description, mainPepper, heat, userId} = sauce
 
-    const imageUrl = req.file.destination+ req.file.filename
-    console.log({imagePath: imageUrl})
+    function makeImageUrl(req, fileName) {
+        return req.protocol +"://"+ req.get("host") + "/images/"+fileName
+    }
 
     const sauceProduct = new Sauces({
         userId,                                 //on peut se le permettre en JS car pareil que userId:userdId
@@ -43,7 +44,7 @@ function createSauce(req, res){
         manufacturer,
         description,
         mainPepper,
-        imageUrl: "images/"+fileName,
+        imageUrl: makeImageUrl(req,fileName),
         heat,
         likes: 0,
         dislikes: 0,
