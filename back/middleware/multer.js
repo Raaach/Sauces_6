@@ -15,7 +15,7 @@ function makeFileName(req, file){
 }
 
 
-const upload = multer({storage: storage});
+const upload = multer({storage});
 
 
 module.exports ={upload}
