@@ -21,11 +21,35 @@ const Sauces =  mongoose.model("Sauces", saucesSchema)
 
 
 function getSauces( req, res){                                    //cette fontion est a utiliser en interne
-        console.log("le token est validé, nous sommes bien dans getSauces")
-        //console.log("Le token est valid",decoded)
-        Sauces.find({}).then(sauces => res.send(sauces))
-        //res.send({message: [{sauce: "sauces1"}, {sauce: "sauces2"}]})
+        Sauces.find({})
+        .then((sauces) => res.send(sauces))
+        .catch((error) => res.status(500).send(error))
     }
+
+// async function getSaucesById(req,res){
+//     try {
+//         const {id} = req.params
+//         const sauce = await Sauces.findById(id)
+//             res.send(sauce)
+//     } catch(error){
+//         res.status(500).send(error)}
+// }
+
+//identique à :
+
+function getSaucesById(req, res){
+    const {id} = req.params
+    Sauces.findById(id)
+    .then((sauce) =>res.send(sauce))
+    .catch(console.error)
+}
+
+function deleteSauces(req,res){
+    const {id} = req.params
+    Sauces.findByIdAndDelete(id)
+        .then((sauce)=>res.send({message: sauce}))
+        .catch(err =>res.status(500).send({message: err}))
+}
 
 
 function createSauce(req, res){
@@ -51,10 +75,16 @@ function createSauce(req, res){
         usersLiked:[],
         usersDisliked : []
     })
-    sauceProduct.save().then((res)=> console.log("Success saved Sauces", res )).catch(console.error)
+    sauceProduct
+        .save()
+        .then((message)=> {
+            res.status(201).send({message})
+            return console.log("Success saved Sauces", message )
+        })
+        .catch(console.error)
 }
 
-module.exports = {getSauces, createSauce} 
+module.exports = {getSauces, createSauce, getSaucesById, deleteSauces} 
 
 
 
