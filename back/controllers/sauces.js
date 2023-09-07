@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const {unlink} = require("fs");
  
 
 const saucesSchema = new mongoose.Schema({
@@ -46,9 +47,20 @@ function getSaucesById(req, res){
 
 function deleteSauces(req,res){
     const {id} = req.params
+
     Sauces.findByIdAndDelete(id)
-        .then((sauce)=>res.send({message: sauce}))
-        .catch(err =>res.status(500).send({message: err}))
+        .then(deleteSaucesImage)
+        .then(sauce => res.send({message: sauce}))
+        .catch((err) => res.status(500).send({message: err}))
+}
+
+function deleteSaucesImage(sauce) {
+    const imageUrl = sauce.imageUrl
+    const fileDelete = imageUrl.split('/').at(-1)
+    unlink(`images/${fileDelete}`, (err)=>{
+    console.error("Problem deleting Image", err)
+    })
+    return sauce
 }
 
 
