@@ -9,7 +9,7 @@ require("./mongo")
 
 //Controllers
 const {createUser,logUser} = require("./controllers/users")
-const {getSauces, createSauce, getSaucesById, deleteSauces} = require("./controllers/sauces")
+const {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce} = require("./controllers/sauces")
 
 //Middleware
 const {upload} = require("./middleware/multer")
@@ -24,6 +24,7 @@ app.get("/api/sauces", authUser, getSauces);
 app.post("/api/sauces", authUser, upload.single("image"), createSauce);
 app.get("/api/sauces/:id", authUser, getSaucesById);
 app.delete("/api/sauces/:id", authUser, deleteSauces); //vérifie le token puis delete
+app.put("/api/sauces", authUser, upload.single("image"), modifySauce);
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen

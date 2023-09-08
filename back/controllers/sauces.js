@@ -62,6 +62,10 @@ function deleteSaucesImage(sauce) {
     return unlink(`images/${fileDelete}`).then(()=> sauce)   //unlink va suprimer quelque chose du dossier
 }
 
+function modifySauce(req,res){
+    
+}
+
 
 function createSauce(req, res){
     const {body,file}= req
@@ -95,7 +99,7 @@ function createSauce(req, res){
         .catch(console.error)
 }
 
-module.exports = {getSauces, createSauce, getSaucesById, deleteSauces} 
+module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce} 
 
 
 
