@@ -23,7 +23,7 @@ app.post("/api/auth/login",logUser);
 app.get("/api/sauces", authUser, getSauces);
 app.post("/api/sauces", authUser, upload.single("image"), createSauce);
 app.get("/api/sauces/:id", authUser, getSaucesById);
-app.delete("/api/sauces/:id", authUser, deleteSauces);
+app.delete("/api/sauces/:id", authUser, deleteSauces); //vérifie le token puis delete
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen

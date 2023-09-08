@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {unlink} = require("fs");
+const unlink = require("fs").promises.unlink;
  
 
 const saucesSchema = new mongoose.Schema({
@@ -47,20 +47,19 @@ function getSaucesById(req, res){
 
 function deleteSauces(req,res){
     const {id} = req.params
-
+//1 ordre de suppresion envoyé à mango
     Sauces.findByIdAndDelete(id)
+    //2.supressin localement
         .then(deleteSaucesImage)
-        .then(sauce => res.send({message: sauce}))
+        //3.envoie du message de succés au site web
+        .then((sauce) => res.send({message: sauce}))
         .catch((err) => res.status(500).send({message: err}))
 }
 
 function deleteSaucesImage(sauce) {
-    const imageUrl = sauce.imageUrl
+    const {imageUrl} = sauce     // c'est identique à imageUrl = sauce.imageUrl
     const fileDelete = imageUrl.split('/').at(-1)
-    unlink(`images/${fileDelete}`, (err)=>{
-    console.error("Problem deleting Image", err)
-    })
-    return sauce
+    return unlink(`images/${fileDelete}`).then(()=> sauce)   //unlink va suprimer quelque chose du dossier
 }
 
 
