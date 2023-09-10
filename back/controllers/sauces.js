@@ -1,3 +1,4 @@
+const { response } = require('express');
 const mongoose = require('mongoose');
 const unlink = require("fs").promises.unlink;
  
@@ -47,23 +48,38 @@ function getSaucesById(req, res){
 
 function deleteSauces(req,res){
     const {id} = req.params
-//1 ordre de suppresion envoyé à mango
+
     Sauces.findByIdAndDelete(id)
-    //2.supressin localement
-        .then(deleteSaucesImage)
-        //3.envoie du message de succés au site web
-        .then((sauce) => res.send({message: sauce}))
-        .catch((err) => res.status(500).send({message: err}))
+    .then((sauce) => clientResSend(sauce,res))
+    .catch((err) => res.status(500).send({message: err}))
+    // .then(deleteSaucesImage)
 }
 
-function deleteSaucesImage(sauce) {
-    const {imageUrl} = sauce     // c'est identique à imageUrl = sauce.imageUrl
-    const fileDelete = imageUrl.split('/').at(-1)
-    return unlink(`images/${fileDelete}`).then(()=> sauce)   //unlink va suprimer quelque chose du dossier
-}
+// function deleteSaucesImage(sauce) {
+    // const {imageUrl} = sauce     // c'est identique à imageUrl = sauce.imageUrl
+    // const fileDelete = imageUrl.split('/').at(-1)
+    // return unlink(`images/${fileDelete}`).then(()=> sauce)   //unlink va suprimer quelque chose du dossier
+// }
 
 function modifySauce(req,res){
-    
+    const {params: {id}} = req
+
+    const {body} = req
+    console.log("body and params:", body, id)
+
+    //mise a jour database
+    Sauces.findByIdAndUpdate(id, body)
+    .then((responseDB) => clientResSend(responseDB,res))
+    .catch((err) => console.error("probleme update",err))
+}
+
+function clientResSend(sauce, res) {
+    if (sauce == null){
+        console.log("Rien à mettre à jour ")
+        res.statud(404).send({message: " Object non trouvé sur database"})
+    }
+    console.log("update validate:",response)
+    res.status(200).send({message: "mise à jour réussi"})
 }
 
 
