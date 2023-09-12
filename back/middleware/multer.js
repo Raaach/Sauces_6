@@ -1,6 +1,5 @@
 const multer = require("multer");
 
-
 const storage = multer.diskStorage({
     destination: "images/",
     filename: function (req, file, cb){

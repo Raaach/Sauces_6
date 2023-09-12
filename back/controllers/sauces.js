@@ -69,6 +69,10 @@ function modifySauce(req,res){
     const {body} = req
     console.log("body and params:", body, id)
 
+    const hasNewImage = req.file != null  // boolean
+    console.log('hasNewImage:', hasNewImage);
+
+
     //mise a jour database
     Sauces.findByIdAndUpdate(id, body)
     .then((responseDB) => clientResSend(responseDB,res))
