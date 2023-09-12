@@ -52,7 +52,7 @@ function deleteSauces(req,res){
     Sauces.findByIdAndDelete(id)
     .then((sauce) => clientResSend(sauce,res))
     .catch((err) => res.status(500).send({message: err}))
-    // .then(deleteSaucesImage)
+    //.then(deleteSaucesImage)
 }
 
 // function deleteSaucesImage(sauce) {
@@ -62,7 +62,9 @@ function deleteSauces(req,res){
 // }
 
 function modifySauce(req,res){
-    const {params: {id}} = req
+    const {
+        params: {id}
+    } = req
 
     const {body} = req
     console.log("body and params:", body, id)
@@ -76,9 +78,9 @@ function modifySauce(req,res){
 function clientResSend(sauce, res) {
     if (sauce == null){
         console.log("Rien à mettre à jour ")
-        res.statud(404).send({message: " Object non trouvé sur database"})
+        return res.status(404).send({message: " Object non trouvé sur database"})
     }
-    console.log("update validate:",response)
+    console.log("update validate:",sauce)
     res.status(200).send({message: "mise à jour réussi"})
 }
 
@@ -108,11 +110,8 @@ function createSauce(req, res){
     })
     sauceProduct
         .save()
-        .then((message)=> {
-            res.status(201).send({message})
-            return console.log("Success saved Sauces", message )
-        })
-        .catch(console.error)
+        .then((message)=>res.status(201).send({message}))
+        .catch((err) => res.status(500).send({message}))
 }
 
 module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce} 
