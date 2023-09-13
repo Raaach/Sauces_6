@@ -66,17 +66,23 @@ function modifySauce(req,res){
         params: {id}
     } = req
 
-    const {body} = req
-    console.log("body and params:", body, id)
+    
+    console.log("req.file:", req.file)
 
-    const hasNewImage = req.file != null  // boolean
-    console.log('hasNewImage:', hasNewImage);
+    const hasNewImage = req.file != null  // boolean s'il y a une new image ou pas
+    const payload = makePayload(hasNewImage, req)
 
 
     //mise a jour database
-    Sauces.findByIdAndUpdate(id, body)
+    Sauces.findByIdAndUpdate(id, payload)
     .then((responseDB) => clientResSend(responseDB,res))
     .catch((err) => console.error("probleme update",err))
+}
+
+function makePayload (hasNewImage, req){
+    console.log('hasNewImage:', hasNewImage);
+    if (!hasNewImage) return req.body // s'il n'y a pas de nouvelle image alors return req.body
+    return 
 }
 
 function clientResSend(sauce, res) {
