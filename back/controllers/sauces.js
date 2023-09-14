@@ -1,6 +1,5 @@
-const { response } = require('express');
 const mongoose = require('mongoose');
-const unlink = require("fs").promises.unlink;
+const {unlink} = require('fs/promises');
  
 
 const saucesSchema = new mongoose.Schema({
@@ -51,6 +50,8 @@ function deleteSauces(req,res){
 
     Sauces.findByIdAndDelete(id)
     .then((sauce) => clientResSend(sauce,res))
+    .then((sauceItem)=> deleteImage(sauceItem))
+    .then((res)=>console.log('file deleted',res))
     .catch((err) => res.status(500).send({message: err}))
     //.then(deleteSaucesImage)
 }
@@ -62,27 +63,35 @@ function deleteSauces(req,res){
 // }
 
 function modifySauce(req,res){
-    const {
-        params: {id}
-    } = req
+    const {params: {id}} = req // recupère les données de la requete
 
-    
-    console.log("req.file:", req.file)
-
-    const hasNewImage = req.file != null  // boolean s'il y a une new image ou pas
-    const payload = makePayload(hasNewImage, req)
+    const hasNewImage = req.file != null  // boolean s'il y a une new image ou pas// s'il y a un req.file donc new image
+    const payload = makePayload(hasNewImage, req) // et tu nous fabrique un payload
 
 
     //mise a jour database
     Sauces.findByIdAndUpdate(id, payload)
     .then((responseDB) => clientResSend(responseDB,res))
+    .then((sauce)=> deleteImage(sauce))
+    .then((res)=>console.log('file deleted',res))
     .catch((err) => console.error("probleme update",err))
 }
 
+function deleteImage(sauce){
+    if (sauce == null) return 
+    console.log('delete images',sauce)
+    const imageToDelete = sauce.imageUrl.split('/').at(-1)
+    return unlink("images/" + imageToDelete) // penser à mettre des return a la fin d'une promesse
+}
+
 function makePayload (hasNewImage, req){
-    console.log('hasNewImage:', hasNewImage);
+    console.log('hasNewImage:', hasNewImage)
     if (!hasNewImage) return req.body // s'il n'y a pas de nouvelle image alors return req.body
-    return 
+    const payload = JSON.parse(req.body.sauce)
+    payload.imageUrl = makeImageUrl(req, req.file.fileName)
+    console.log('nouvelle image à gerer')
+    console.log('voici le body', payload)
+    return payload
 }
 
 function clientResSend(sauce, res) {
@@ -91,19 +100,19 @@ function clientResSend(sauce, res) {
         return res.status(404).send({message: " Object non trouvé sur database"})
     }
     console.log("update validate:",sauce)
-    res.status(200).send({message: "mise à jour réussi"})
+    return Promise.resolve(res.status(200).send({message: "mise à jour réussi"})).then(()=> sauce)
 }
 
 
+function makeImageUrl(req, fileName) {
+    return req.protocol +"://"+ req.get("host") + "/images/"+fileName
+}
 function createSauce(req, res){
     const {body,file}= req
     const {fileName} = file
     const  sauce = JSON.parse(body.sauce) //on le transforme en objet avec JSON.parsew
     const {name, manufacturer, description, mainPepper, heat, userId} = sauce
 
-    function makeImageUrl(req, fileName) {
-        return req.protocol +"://"+ req.get("host") + "/images/"+fileName
-    }
 
     const sauceProduct = new Sauces({
         userId,                                 //on peut se le permettre en JS car pareil que userId:userdId
