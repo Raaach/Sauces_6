@@ -27,22 +27,13 @@ function getSauces( req, res){                                    //cette fontio
         .catch((error) => res.status(500).send(error))
     }
 
-// async function getSaucesById(req,res){
-//     try {
-//         const {id} = req.params
-//         const sauce = await Sauces.findById(id)
-//             res.send(sauce)
-//     } catch(error){
-//         res.status(500).send(error)}
-// }
-
-//identique à :
+function getIdSauce(req, res) {
+    const {id} = req.params
+    return Sauces.findById(id)
+}
 
 function getSaucesById(req, res){
-    const {id} = req.params
-    Sauces.findById(id)
-    .then((sauce) =>res.send(sauce))
-    .catch(console.error)
+    getIdSauce(req,res).then((sauce) => clientResSend(sauce, res)).catch((err) => res.status(500).send(err))
 }
 
 function deleteSauces(req,res){
@@ -53,14 +44,7 @@ function deleteSauces(req,res){
     .then((sauceItem)=> deleteImage(sauceItem))
     .then((res)=>console.log('file deleted',res))
     .catch((err) => res.status(500).send({message: err}))
-    //.then(deleteSaucesImage)
 }
-
-// function deleteSaucesImage(sauce) {
-    // const {imageUrl} = sauce     // c'est identique à imageUrl = sauce.imageUrl
-    // const fileDelete = imageUrl.split('/').at(-1)
-    // return unlink(`images/${fileDelete}`).then(()=> sauce)   //unlink va suprimer quelque chose du dossier
-// }
 
 function modifySauce(req,res){
     const {params: {id}} = req // recupère les données de la requete
@@ -100,7 +84,7 @@ function clientResSend(sauce, res) {
         return res.status(404).send({message: " Object non trouvé sur database"})
     }
     console.log("update validate:",sauce)
-    return Promise.resolve(res.status(200).send({message: "mise à jour réussi"})).then(()=> sauce)
+    return Promise.resolve(res.status(200).send(sauce)).then(()=> sauce)
 }
 
 
@@ -133,7 +117,11 @@ function createSauce(req, res){
         .catch((err) => res.status(500).send({message}))
 }
 
-module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce} 
+function sauceLike(req,res){
+    getIdSauce(req,res).then((sauce) => console.log("sauce like is : ", sauce)) 
+}
+
+module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce, sauceLike} 
 
 
 

@@ -1,30 +1,17 @@
-
 const {app, express} = require("./server");
+const {saucesRouter} = require("./routers/sauces.routers");
+const {authRouter} = require("./routers/auth.routers");
 const port = 3000;
 const path = require("path");
-
 
 //connection database  
 require("./mongo")
 
-//Controllers
-const {createUser,logUser} = require("./controllers/users")
-const {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce} = require("./controllers/sauces")
-
 //Middleware
-const {upload} = require("./middleware/multer")
-const {authUser} = require("./middleware/auth")
-
+app.use("/api/sauces", saucesRouter)
+app.use("/api/auth", authRouter)
 
 //Routes
-
-app.post("/api/auth/signup", createUser );          // req,res => createUser(req,res)
-app.post("/api/auth/login",logUser);
-app.get("/api/sauces", authUser, getSauces);
-app.post("/api/sauces", authUser, upload.single("image"), createSauce);
-app.get("/api/sauces/:id", authUser, getSaucesById);
-app.delete("/api/sauces/:id", authUser, deleteSauces); //vérifie le token puis delete
-app.put("/api/sauces/:id", authUser, upload.single("image"), modifySauce);
 app.get("/", (req, res) => res.send("Hello World"))
 
 //Listen
