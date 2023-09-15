@@ -1,6 +1,6 @@
 const {app, express} = require("./server");
-const {saucesRouter} = require("./routers/sauces.routers");
-const {authRouter} = require("./routers/auth.routers");
+const {saucesRouter} = require("./routers/sauces.router");
+const {authRouter} = require("./routers/auth.router");
 const port = 3000;
 const path = require("path");
 

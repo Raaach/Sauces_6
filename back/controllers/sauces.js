@@ -21,19 +21,21 @@ const Sauces =  mongoose.model("Sauces", saucesSchema)
 
 
 
-function getSauces( req, res){                                    //cette fontion est a utiliser en interne
+function getSauces(req, res){                                    //cette fontion est a utiliser en interne
         Sauces.find({})
         .then((sauces) => res.send(sauces))
         .catch((error) => res.status(500).send(error))
     }
 
-function getIdSauce(req, res) {
+function getSauce(req, res) {
     const {id} = req.params
     return Sauces.findById(id)
 }
 
 function getSaucesById(req, res){
-    getIdSauce(req,res).then((sauce) => clientResSend(sauce, res)).catch((err) => res.status(500).send(err))
+    getSauce(req,res)
+        .then((sauce) => clientResSend(sauce, res))
+        .catch((err) => res.status(500).send(err))
 }
 
 function deleteSauces(req,res){
@@ -80,10 +82,8 @@ function makePayload (hasNewImage, req){
 
 function clientResSend(sauce, res) {
     if (sauce == null){
-        console.log("Rien à mettre à jour ")
         return res.status(404).send({message: " Object non trouvé sur database"})
     }
-    console.log("update validate:",sauce)
     return Promise.resolve(res.status(200).send(sauce)).then(()=> sauce)
 }
 
@@ -105,11 +105,11 @@ function createSauce(req, res){
         description,
         mainPepper,
         imageUrl: makeImageUrl(req,fileName),
-        heat,
+        heat : heat,
         likes: 0,
         dislikes: 0,
         usersLiked:[],
-        usersDisliked : []
+        usersDisliked :[]
     })
     sauceProduct
         .save()
@@ -117,11 +117,13 @@ function createSauce(req, res){
         .catch((err) => res.status(500).send({message}))
 }
 
-function sauceLike(req,res){
-    getIdSauce(req,res).then((sauce) => console.log("sauce like is : ", sauce)) 
+function likeSauce(req,res){
+    const {like, userId} = req.body
+    getSauce(req,res).then((sauce) => console.log("sauce like is : ", sauce))
+    .catch((err) => res.status(500).send(err))
 }
 
-module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce, sauceLike} 
+module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce, likeSauce} 
 
 
 

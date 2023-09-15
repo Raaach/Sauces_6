@@ -5,7 +5,7 @@ const {
     getSaucesById, 
     deleteSauces, 
     modifySauce, 
-    sauceLike
+    likeSauce
     } 
     = require("../controllers/sauces")
 const {authUser} = require("../middleware/auth")
@@ -19,7 +19,7 @@ saucesRouter.post("/", authUser, upload.single("image"), createSauce);
 saucesRouter.get("/:id", authUser, getSaucesById);
 saucesRouter.delete("/:id", authUser, deleteSauces); //vérifie le token puis delete
 saucesRouter.put("/:id", authUser, upload.single("image"), modifySauce);
-saucesRouter.post("/:id/like ", authUser, sauceLike)
+saucesRouter.post("/:id/like", authUser, likeSauce)
 
 
 
