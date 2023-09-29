@@ -44,7 +44,7 @@ function deleteSauces(req,res){
     Sauces.findByIdAndDelete(id)
     .then((sauce) => clientResSend(sauce,res))
     .then((sauceItem)=> deleteImage(sauceItem))
-    .then((res)=>console.log('file deleted',res))
+    .then((res)=> console.log('file deleted',res))
     .catch((err) => res.status(500).send({message: err}))
 }
 
@@ -119,9 +119,44 @@ function createSauce(req, res){
 
 function likeSauce(req,res){
     const {like, userId} = req.body
-    getSauce(req,res).then((sauce) => console.log("sauce like is : ", sauce))
+    if (![0,1,-1].includes(like)) return res.status(403).send({message: "Bad request"})
+    
+
+    getSauce(req,res)
+    .then((sauce) => updateVote(sauce, like, userId))
+    .then (prodcut  => clientResSend(prodcut, res))
     .catch((err) => res.status(500).send(err))
 }
+
+
+function updateVote(sauce, like, userId){
+    if (like === 1 || like === -1) incrementVote(sauce, userId, like)
+    if (like === 0) resetVote(sauce, userId)
+    return sauce.save()
+}
+
+function resetVote(sauce, userId){
+    const {usersLiked, usersDisliked} = sauce
+    if ([usersLiked, usersDisliked].every(arr => arr.includes(userId))) return
+}
+
+function incrementVote(sauce, userId, like){
+    const {usersLiked, usersDisliked} = sauce
+
+    const votersArray = like === 1 ? usersLiked : usersDisliked  //ternary operator, manière de vérifier si like = 1,
+                                                                // si oui on cherche a pusher
+                                                                // dans usersLiked, si non, alors on cherche à pusher dans usersDisliked
+
+    if (votersArray.includes(userId)) return // si ça inclue userid dans l'array usersLiked
+    votersArray.push(userId)
+
+    
+    let voteToUpdate = like === 1 ? sauce.likes : sauce.dislikes
+    voteToUpdate++
+
+    console.log("produit après vote:", sauce)
+}
+
 
 module.exports = {getSauces, createSauce, getSaucesById, deleteSauces, modifySauce, likeSauce} 
 

@@ -1,2 +1,5 @@
-GET http://localhost:3000/api/sauces
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYmluc29ucHJvdXRAb3V0bG9vay51cyIsImlhdCI6MTY5MzA1NzgyMCwiZXhwIjoxNjkzMTAxMDIwfQ.6SYbONl82x5RJPIdSP6M-ezGqDTiOdxOuVdmT2l4P_I
+
+POST http://localhost:3000/api/sauces/6502a7130d288de92d2bd444/like
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvYmluc29ucHJvdXRAb3V0bG9vay51cyIsImlhdCI6MTY5NTExOTM0MiwiZXhwIjoxNjk1ODM5MzQyfQ.2mVr4o3awYYfrtHeyAicIIf64rHGDXaN1CUfMtReUso
+
+{"userId": "64e9f080acf67b4d878b36f1", "like": 1}
