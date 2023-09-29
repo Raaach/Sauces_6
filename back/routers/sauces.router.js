@@ -6,11 +6,13 @@ const {
     deleteSauces, 
     modifySauce, 
     likeSauce
-    } 
-    = require("../controllers/sauces")
+    } = require("../controllers/sauces")
 const {authUser} = require("../middleware/auth")
 const {upload} = require("../middleware/multer")
 const saucesRouter =  express.Router()
+const bodyParser = require ("body-parser")
+
+saucesRouter.use(bodyParser.json())
 
 
 

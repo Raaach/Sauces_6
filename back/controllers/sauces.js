@@ -119,25 +119,40 @@ function createSauce(req, res){
 
 function likeSauce(req,res){
     const {like, userId} = req.body
-    if (![0,1,-1].includes(like)) return res.status(403).send({message: "Bad request"})
+    if (![1,-1,0].includes(like)) return res.status(403).send({message: "Bad request"})//si c'est égale à autre que -1, 1 ou 0 alors message 403
     
 
-    getSauce(req,res)
-    .then((sauce) => updateVote(sauce, like, userId))
+    getSauce(req,res)                                      //quand cette fonction reçois
+    .then((sauce) => updateVote(sauce, like, userId, res))//sauce depuis la base de donnée, elle lance la fonction updateVote
+    .then(sauCCE => sauCCE.save())
     .then (prodcut  => clientResSend(prodcut, res))
     .catch((err) => res.status(500).send(err))
 }
 
 
-function updateVote(sauce, like, userId){
-    if (like === 1 || like === -1) incrementVote(sauce, userId, like)
-    if (like === 0) resetVote(sauce, userId)
-    return sauce.save()
+function updateVote(sauce, like, userId, res){// cette fonction regarde si liek est égale à 1 ou -1
+    if (like === 1 || like === -1) return incrementVote(sauce, userId, like)// on place le return
+    return resetVote(sauce, userId, res)
 }
 
-function resetVote(sauce, userId){
+function resetVote(sauce, userId, res){
     const {usersLiked, usersDisliked} = sauce
-    if ([usersLiked, usersDisliked].every(arr => arr.includes(userId))) return
+    if ([usersLiked, usersDisliked].every(arr => arr.includes(userId)))  // avec every on vérifie dans chaque array
+    return Promise.reject("User seems to have voted both ways")// on le force à aller dans le point catch au-dessus
+
+    if (![usersLiked, usersDisliked].some(arr => arr.includes(userId))) //si aucune des array n'inclue userID alors return...
+    return Promise.reject("user seems to have not voted")
+        
+    if (usersLiked.includes(userId)){
+        --sauce.likes 
+        sauce.usersLiked = sauce.usersLiked.filter (id => id !== userId )
+    } else {
+        --sauce.dislikes
+        sauce.usersDisliked = sauce.usersDisliked.filter (id => id !== userId)
+    }
+    return sauce
+
+
 }
 
 function incrementVote(sauce, userId, like){
@@ -147,14 +162,18 @@ function incrementVote(sauce, userId, like){
                                                                 // si oui on cherche a pusher
                                                                 // dans usersLiked, si non, alors on cherche à pusher dans usersDisliked
 
-    if (votersArray.includes(userId)) return // si ça inclue userid dans l'array usersLiked
+    if (votersArray.includes(userId)) return sauce // si ça inclue userid dans l'array usersLiked
     votersArray.push(userId)
 
-    
-    let voteToUpdate = like === 1 ? sauce.likes : sauce.dislikes
-    voteToUpdate++
+    like === 1 ? ++sauce.likes : ++sauce.dislikes // c'est exactement comme la ligne en dessous
+    //     if (like === 1){
+    // ++sauce.likes
+    // }else{
+    //     ++sauce.dislikes
+    // }
+    // console.log("produit après vote:", sauce)
+    return sauce
 
-    console.log("produit après vote:", sauce)
 }
 
 

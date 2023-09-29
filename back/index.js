@@ -1,9 +1,9 @@
 const {app, express} = require("./server");
 const {saucesRouter} = require("./routers/sauces.router");
 const {authRouter} = require("./routers/auth.router");
-const bodyParser = require ("body-parser");
 const port = 3000;
 const path = require("path");
+const bodyParser = require ("body-parser");
 
 //connection database  
 require("./mongo")
