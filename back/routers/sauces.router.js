@@ -12,8 +12,7 @@ const {upload} = require("../middleware/multer")
 const saucesRouter =  express.Router()
 const bodyParser = require ("body-parser")
 
-saucesRouter.use(bodyParser.json())
-
+saucesRouter.use(bodyParser.json())//
 
 
 saucesRouter.get("/", authUser, getSauces);

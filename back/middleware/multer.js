@@ -1,6 +1,6 @@
-const multer = require("multer");
+const multer = require("multer");   // package de gestion de fichier
 
-const storage = multer.diskStorage({
+const storage = multer.diskStorage({ // diskStorage configure le chemin et le nom du fichier entrants
     destination: "images/",
     filename: function (req, file, cb){
         cb(null,makeFileName(req, file))
