@@ -5,22 +5,8 @@
 //** importation dépendances **//
 const mongoose = require('mongoose');           //une bibliothèque pour intéragir avec mongoDB
 const {unlink} = require('fs/promises');        //pour suprimer des fichiers, ici des images
+const {saucesSchema} = require('../models/sauceSchema')
  
-//** schéma de données**//
-const saucesSchema = new mongoose.Schema({      //la structure comportant les données suivantes
-    userId: String,
-    name: String,
-    manufacturer: String,
-    description: String,
-    mainPepper: String,
-    imageUrl: String,
-    heat: Number,
-    likes: Number,
-    dislikes: Number,
-    usersLiked:[ String ],
-    usersDisliked : [ String ]
-
-})
 
 const Sauces =  mongoose.model("Sauces", saucesSchema)
 
